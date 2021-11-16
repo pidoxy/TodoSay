@@ -1,0 +1,22 @@
+.signin_container{
+    height: 100vh;
+}
+
+svg{
+    display: inline-block;
+    /* padding: 0.25rem; */
+    vertical-align: middle;
+    margin-right: 0.5rem;
+}
+
+input[type="text" i]{
+    margin-top: 0.5rem !important;
+}
+
+input[type="checkbox" i]{
+    margin: auto !important;
+}
+
+.bg_primary{
+    background-color: #0d47a1 !important;
+}

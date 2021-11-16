@@ -1,24 +1,31 @@
-import logo from './logo.svg';
 import './App.css';
+import 'antd/dist/antd.css';
+
+import {
+  BrowserRouter,
+  Routes,
+  Route
+} from "react-router-dom";
+
+import SignIn from './pages/signIn';
+import SignUp from './pages/signUp';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+ <BrowserRouter> 
+ <Routes> 
+       <Route path="/" element={<SignIn />}> 
+         {/* <Route index element={<Home />} />  */}
+         <Route path="signup" element={<SignUp />}> 
+         <Route path="signin" element={<SignIn />} /> 
+           {/* <Route path=":teamId" element={<Team />} />  */}
+           {/* <Route path="new" element={<NewTeamForm />} />  */}
+           {/* <Route index element={<LeagueStandings />} />  */}
+         </Route> 
+       </Route> 
+     </Routes> 
+   </BrowserRouter> 
+
   );
 }
 
