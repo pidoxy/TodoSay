@@ -1,0 +1,8 @@
+/                       /signin
+/signup                 /signup 
+/signin                 /signin
+/dashboard              /dashboard
+/dashboard/analytics    /dashboard/analytics
+/dashboard/billings     /dashboard/analytics
+/dashboard/settings     /dashboard/settings
+/dashboard/help         /dashboard/help
