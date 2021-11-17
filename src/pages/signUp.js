@@ -45,7 +45,7 @@ const Google = () => (
   </svg>
 );
 
-export default function Signup() {
+export default function Signin() {
   return (
     <div className="flex items-center my-5 md:my-0 flex-col-reverse md:flex-row justify-center signin_container align-middle mx-5">
       <div className="flex-1 flex-grow">
@@ -54,7 +54,7 @@ export default function Signup() {
           alt="logo"
           className="mx-auto md:mx-0 w-1/4"
         />
-        <h3 className="my-5">Login</h3>
+        <h3 className="my-5">Create Account</h3>
         <p>Sign up to plan your day</p>
         <div className="flex flex-col-reverse md:flex-row md:space-x-5 my-3">
           <Button
@@ -62,47 +62,46 @@ export default function Signup() {
             size={"large"}
             icon={<Microsoft />}
           >
-            Sign in with Google
+            Sign up with Google
           </Button>
           <Button
             className="flex-1 my-3 md:my-0"
             size={"large"}
             icon={<Google />}
           >
-            Sign in with Microsoft
+            Sign up with Microsoft
           </Button>
         </div>
         <div>
-          <p className="text-center my-5">or signin with email</p>
+          <p className="text-center my-5">or signup with email</p>
         </div>
-        <div className="space-y-6 m-auto">
-          <label style={{marginTop: '1rem'}} className="text-error-700">Email</label>
-          <Input style={{marginBottom: '1rem'}} placeholder="example@example.com" />
-          <label style={{marginTop: '2rem'}}>Password</label>
-          <Input.Password
-            style={{marginTop: "0.5rem", marginBottom: "1rem"}}
+        <div className="space-y-5 m-auto">
+          <label className="mt-10 text-error-700">Email</label>
+          <Input className="mt-0" placeholder="example@example.com" />
+          <label className="mb-10 ">Password</label>
+          <Input.Password className="mt-0" 
             iconRender={(visible) =>
               visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
             }
             placeholder="********"
           />
-          <div className="flex flex-row justify-between">
-            <div className="grid grid-cols-12">
-              <Input className="col-span-3 m-auto mt-5" type="checkbox" />
-              <label className="col-span-9">Remember me</label>
-            </div>
-            <div className="flex">
-              <a href="/forgot-password" className="text-sm">
-                Forgot password?
-              </a>
-            </div>
+          <label className="mt-10">Confirm Password</label>
+          <Input.Password
+            iconRender={(visible) =>
+              visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+            }
+            placeholder="********"
+          />
+          <div className="flex ">
+            <Input className="m-auto flex-1" type="checkbox" />
+            <label className="text-sm flex-3">
+              I agree with TODOsay terms of service and privacy policy
+            </label>
           </div>
           <Button className="bg_primary" size={"large"} type="primary" block>
-            Sign in
+            Sign up
           </Button>
-          <p>
-            Already have an account? <a href="/signin">Login</a>
-          </p>
+          <p>Already have an account? <a href="/signin">Login</a></p>
         </div>
       </div>
       <div className="flex-1 flex">
