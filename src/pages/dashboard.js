@@ -14,13 +14,13 @@ import {
   Dropdown,
 } from "antd";
 import {
-  MenuUnfoldOutlined,
-  MenuFoldOutlined,
+//   MenuUnfoldOutlined,
+//   MenuFoldOutlined,
   MenuOutlined,
   UserOutlined,
-  BarChartOutlined,
-  MoneyCollectOutlined,
-  QuestionCircleOutlined,
+//   BarChartOutlined,
+//   MoneyCollectOutlined,
+//   QuestionCircleOutlined,
   SettingOutlined,
   LogoutOutlined,
   //   NotificationOutlined,
@@ -36,20 +36,20 @@ import Settings from "./settings";
 import Help from "./help";
 
 const { Header, Sider, Content } = Layout;
-const { Search } = Input;
+// const { Search } = Input;
 const { TextArea } = Input;
 const { Option } = Select;
 
 export default function Dashboard() {
-  const [state, setState] = useState({
-    collapsed: false,
-  });
+//   const [state, setState] = useState({
+//     collapsed: false,
+//   });
 
-  const toggle = () => {
-    setState({
-      collapsed: !state.collapsed,
-    });
-  };
+//   const toggle = () => {
+//     setState({
+//       collapsed: !state.collapsed,
+//     });
+//   };
 
   const todos = [
     {
