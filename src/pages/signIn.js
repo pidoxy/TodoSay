@@ -1,7 +1,11 @@
 import "../styles/signin.css";
 
-import { Input, Button } from "antd";
+import { useState } from "react";
+import { Input, Button, notification } from "antd";
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
+import { withRouter } from "react-router-dom";
+import axios from "axios";
+
 
 const Microsoft = () => (
   <svg
@@ -45,7 +49,49 @@ const Google = () => (
   </svg>
 );
 
-export default function Signup() {
+const openNotificationWithIcon = (type, description, placement) => {
+  notification[type]({
+    message: ` ${type.toUpperCase()}`,
+    description,
+    placement,
+  });
+};
+
+ const Signup = withRouter(({history}) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+
+  const URL = `https://todosay.herokuapp.com/api/auth/signin`;
+
+  async function submitHandler() {
+    await axios({
+      url: URL,
+      method: "POST",
+      data: {
+        email: email,
+        password: password,
+      },
+      headers: {
+        clientid: "A6w0Xu6",
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => {
+        console.log(res);
+
+        console.log(res.data.message);
+        if (res.data.success === false) {
+          openNotificationWithIcon("error", res.data.message);
+        } else if (res.data.success === true) {
+          openNotificationWithIcon("success", res.data.message);
+          history.push('/dashboard')
+          console.log(res.data.data.user);
+          localStorage.setItem("user", JSON.stringify(res.data.data.user));
+        }
+      })
+      .catch((err) => console.log(err));
+  }
   return (
     <div className="flex items-center my-5 md:my-0 flex-col-reverse md:flex-row justify-center signin_container align-middle mx-5">
       <div className="flex-1 flex-grow">
@@ -60,14 +106,14 @@ export default function Signup() {
           <Button
             className="flex-1 my-3 md:my-0"
             size={"large"}
-            icon={<Microsoft />}
+            icon={<Google />}
           >
             Sign in with Google
           </Button>
           <Button
             className="flex-1 my-3 md:my-0"
             size={"large"}
-            icon={<Google />}
+            icon={<Microsoft />}
           >
             Sign in with Microsoft
           </Button>
@@ -76,11 +122,18 @@ export default function Signup() {
           <p className="text-center my-5">or signin with email</p>
         </div>
         <div className="space-y-6 m-auto">
-          <label style={{marginTop: '1rem'}} className="text-error-700">Email</label>
-          <Input style={{marginBottom: '1rem'}} placeholder="example@example.com" />
-          <label style={{marginTop: '2rem'}}>Password</label>
+          <label style={{ marginTop: "1rem" }} className="text-error-700">
+            Email
+          </label>
+          <Input
+            onChange={(e) => setEmail(e.target.value)}
+            style={{ marginBottom: "1rem" }}
+            placeholder="example@example.com"
+          />
+          <label style={{ marginTop: "2rem" }}>Password</label>
           <Input.Password
-            style={{marginTop: "0.5rem", marginBottom: "1rem"}}
+            onChange={(e) => setPassword(e.target.value)}
+            style={{ marginTop: "0.5rem", marginBottom: "1rem" }}
             iconRender={(visible) =>
               visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
             }
@@ -97,11 +150,39 @@ export default function Signup() {
               </a>
             </div>
           </div>
-          <Button className="bg_primary" size={"large"} type="primary" block>
+          <Button
+            onClick={() => {
+              if (password === "" && email === "") {
+                openNotificationWithIcon(
+                  "error",
+                  "Input your details",
+                  "topRight"
+                );
+              } else if (email === "") {
+                openNotificationWithIcon(
+                  "error",
+                  "Input your email",
+                  "topRight"
+                );
+              } else if (password === "") {
+                openNotificationWithIcon(
+                  "error",
+                  "Input your password",
+                  "topRight"
+                );
+              } else if (password && email) {
+                submitHandler();
+              }
+            }}
+            className="bg_primary"
+            size={"large"}
+            type="primary"
+            block
+          >
             Sign in
           </Button>
           <p>
-            Not registered yet? <a href="/signin">Create an account</a>
+            Not registered yet? <a href="/signup">Create an account</a>
           </p>
         </div>
       </div>
@@ -114,4 +195,6 @@ export default function Signup() {
       </div>
     </div>
   );
-}
+})
+
+export default Signup;

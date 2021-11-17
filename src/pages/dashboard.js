@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Layout,
   Menu,
@@ -14,19 +14,17 @@ import {
   Dropdown,
 } from "antd";
 import {
-//   MenuUnfoldOutlined,
-//   MenuFoldOutlined,
   MenuOutlined,
   UserOutlined,
-//   BarChartOutlined,
-//   MoneyCollectOutlined,
-//   QuestionCircleOutlined,
   SettingOutlined,
   LogoutOutlined,
-  //   NotificationOutlined,
 } from "@ant-design/icons";
+import SpeechRecognition, {
+  useSpeechRecognition,
+} from "react-speech-recognition";
 
 import { Link, Route, Switch, useRouteMatch } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 
 import "../styles/dashboard.css";
 
@@ -40,16 +38,16 @@ const { Header, Sider, Content } = Layout;
 const { TextArea } = Input;
 const { Option } = Select;
 
-export default function Dashboard() {
-//   const [state, setState] = useState({
-//     collapsed: false,
-//   });
+const Dashboard = withRouter(({history}) => {
+  //   const [state, setState] = useState({
+  //     collapsed: false,
+  //   });
 
-//   const toggle = () => {
-//     setState({
-//       collapsed: !state.collapsed,
-//     });
-//   };
+  //   const toggle = () => {
+  //     setState({
+  //       collapsed: !state.collapsed,
+  //     });
+  //   };
 
   const todos = [
     {
@@ -133,6 +131,38 @@ export default function Dashboard() {
     </Menu>
   );
 
+  const {
+    transcript,
+    interimTranscript,
+    finalTranscript,
+    resetTranscript,
+    listening,
+  } = useSpeechRecognition();
+
+  useEffect(() => {
+    if (finalTranscript !== "") {
+      console.log("Got final result:", finalTranscript);
+    }
+  }, [interimTranscript, finalTranscript]);
+
+  if (!SpeechRecognition.browserSupportsSpeechRecognition()) {
+    return null;
+  }
+
+  if (!SpeechRecognition.browserSupportsSpeechRecognition()) {
+    console.log(
+      "Your browser does not support speech recognition software! Try Chrome desktop, maybe?"
+    );
+  }
+  const listenContinuously = () => {
+    SpeechRecognition.startListening({
+      continuous: true,
+      language: "en-GB",
+    });
+  };
+
+  let user = JSON.parse(localStorage.getItem("user"));
+
   return (
     <Layout>
       <Sider
@@ -144,7 +174,7 @@ export default function Dashboard() {
         //   // setsideWidth(window.innerWidth * 0.95);
         // }}
         onCollapse={(collapsed, type) => {
-          console.log(collapsed, type);
+          //   console.log(collapsed, type);
         }}
         style={{
           overflow: "auto",
@@ -205,7 +235,7 @@ export default function Dashboard() {
                 onClick={(e) => e.preventDefault()}
               >
                 <UserOutlined style={{ marginRight: 10 }} />
-                Hello Pidoxy!
+                {user?.user.displayName}
               </div>
             </Dropdown>
             <MenuOutlined onClick={() => setOpen(!open)} />
@@ -271,7 +301,7 @@ export default function Dashboard() {
                   <Row>
                     <Col span={20} className="space-y-5 my-10">
                       {todos.map((todo, index) => (
-                        <Card type="inner">
+                        <Card key={index} type="inner">
                           <Row>
                             <Col span={2}>
                               <img
@@ -313,7 +343,14 @@ export default function Dashboard() {
                     </Col>
                     <Col span={3} offset={1}>
                       <div onClick={() => setVisible(true)}>
-                        <img src={visible ? "./images/add-todo-active.svg":"./images/add-todo.svg"} alt="add" />
+                        <img
+                          src={
+                            visible
+                              ? "./images/add-todo-active.svg"
+                              : "./images/add-todo.svg"
+                          }
+                          alt="add"
+                        />
                       </div>
                       <Modal
                         title="Create new task"
@@ -354,31 +391,63 @@ export default function Dashboard() {
                           Add task
                         </Button>{" "}
                       </Modal>
-                      <div onClick={() => setVisible2(true)}>
-                        <img src={visible2 ? "./images/speak-active.svg": "./images/speak.svg"} alt="add" />
+                      <div
+                        onClick={() => {
+                          setVisible2(true);
+                          SpeechRecognition.startListening();
+                          listenContinuously();
+                          console.log(transcript);
+                        }}
+                      >
+                        <img
+                          src={
+                            visible2
+                              ? "./images/speak-active.svg"
+                              : "./images/speak.svg"
+                          }
+                          alt="add"
+                        />
                       </div>
                       <Modal
                         title="Create new task"
                         centered
                         visible={visible2}
                         onOk={() => setVisible2(false)}
-                        onCancel={() => setVisible2(false)}
+                        onCancel={() => {
+                          setVisible2(false);
+                          resetTranscript();
+                        }}
                         width={600}
                         footer={null}
                       >
+                        <p>{transcript}</p>
                         <Row style={{ margin: "1rem 0" }}>
                           <Col span={6}>
-                            <img src="./images/speak.svg" alt="add" />
+                            <img
+                              role="button"
+                              onClick={listenContinuously}
+                              src="./images/speak.svg"
+                              alt="add"
+                            />
                           </Col>
                           <Col span={18}>
-                            <img style={{verticalAlign: 'middle', margin: 'auto'}} src="./images/audio.svg" alt="add" />
+                            <img
+                              style={{
+                                verticalAlign: "middle",
+                                margin: "auto",
+                              }}
+                              src="./images/audio.svg"
+                              alt="add"
+                            />
                           </Col>
                         </Row>
+                        {listening ? "Listening" : "Not Listening"}
                         <Button
-                        // style={{ margin: "1rem 0", marginLeft: 'auto !important' }}
+                          // style={{ margin: "1rem 0", marginLeft: 'auto !important' }}
                           className="btn_modal flex mx-auto"
                           size={"large"}
                           type="primary"
+                          onClick={SpeechRecognition.stopListening}
                         >
                           Add task
                         </Button>{" "}
@@ -408,4 +477,5 @@ export default function Dashboard() {
       </Layout>
     </Layout>
   );
-}
+})
+export default Dashboard;

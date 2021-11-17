@@ -1,7 +1,8 @@
 import "../styles/signin.css";
-
-import { Input, Button } from "antd";
+import { useState } from "react";
+import { Input, Button, notification } from "antd";
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
+import axios from "axios";
 
 const Microsoft = () => (
   <svg
@@ -45,7 +46,49 @@ const Google = () => (
   </svg>
 );
 
+const openNotificationWithIcon = (type, description, placement) => {
+  notification[type]({
+    message: ` ${type.toUpperCase()}`,
+    description,
+    placement,
+  });
+};
+
 export default function Signin() {
+  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const URL = `https://todosay.herokuapp.com/api/auth/signup`;
+
+  async function submitHandler() {
+    await axios({
+      url: URL,
+      method: "POST",
+      data: {
+        username: username,
+        email: email,
+        password: password,
+      },
+      headers: {
+        clientid: "A6w0Xu6",
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => {
+        console.log(res);
+
+        console.log(res.data.message);
+        if (res.data.success === false) {
+          openNotificationWithIcon("error", res.data.message);
+        } else if (res.data.success === true) {
+          openNotificationWithIcon("success", res.data.message);
+        }
+      })
+      .catch((err) => console.log(err));
+  }
+
   return (
     <div className="flex items-center my-5 md:my-0 flex-col-reverse md:flex-row justify-center signin_container align-middle mx-5">
       <div className="flex-1 flex-grow">
@@ -76,10 +119,22 @@ export default function Signin() {
           <p className="text-center my-5">or signup with email</p>
         </div>
         <div className="space-y-5 m-auto">
+          <label className="mt-10 text-error-700">Username</label>
+          <Input
+            onChange={(e) => setUsername(e.target.value)}
+            className="mt-0"
+            placeholder="Input your username"
+          />
           <label className="mt-10 text-error-700">Email</label>
-          <Input className="mt-0" placeholder="example@example.com" />
+          <Input
+            onChange={(e) => setEmail(e.target.value)}
+            className="mt-0"
+            placeholder="example@example.com"
+          />
           <label className="mb-10 ">Password</label>
-          <Input.Password className="mt-0" 
+          <Input.Password
+            onChange={(e) => setPassword(e.target.value)}
+            className="mt-0"
             iconRender={(visible) =>
               visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
             }
@@ -87,6 +142,7 @@ export default function Signin() {
           />
           <label className="mt-10">Confirm Password</label>
           <Input.Password
+            onChange={(e) => setConfirmPassword(e.target.value)}
             iconRender={(visible) =>
               visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
             }
@@ -98,10 +154,63 @@ export default function Signin() {
               I agree with TODOsay terms of service and privacy policy
             </label>
           </div>
-          <Button className="bg_primary" size={"large"} type="primary" block>
+          <Button
+            onClick={() => {
+              if (
+                password === "" &&
+                confirmPassword === "" &&
+                email === "" &&
+                username === ""
+              ) {
+                openNotificationWithIcon(
+                  "error",
+                  "Input your details",
+                  "topRight"
+                );
+              } else if (username === "") {
+                openNotificationWithIcon(
+                  "error",
+                  "Input your username",
+                  "topRight"
+                );
+              } else if (email === "") {
+                openNotificationWithIcon(
+                  "error",
+                  "Input your email",
+                  "topRight"
+                );
+              } else if (password === "") {
+                openNotificationWithIcon(
+                  "error",
+                  "Input your password",
+                  "topRight"
+                );
+              } else if (
+                password &&
+                confirmPassword &&
+                email &&
+                username &&
+                password === confirmPassword
+              ) {
+                submitHandler();
+              } else if (confirmPassword !== password) {
+                openNotificationWithIcon(
+                  "error",
+                  "Passwords do not match",
+                  "topRight"
+                );
+              }
+            }}
+            className="bg_primary"
+            size={"large"}
+            type="primary"
+            block
+          >
             Sign up
           </Button>
-          <p>Already have an account? <a href="/signin">Login</a></p>
+          <p>
+            Already have an account? <a href="/signin">Login</a>
+          </p>
         </div>
       </div>
       <div className="flex-1 flex">
