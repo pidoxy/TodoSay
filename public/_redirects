@@ -1,9 +1,1 @@
-
-
-/signup                 /signup 
-/signin                 /signin
-/dashboard              /dashboard
-/dashboard/analytics    /dashboard/analytics
-/dashboard/billings     /dashboard/billings
-/dashboard/settings     /dashboard/settings
-/dashboard/help         /dashboard/help
+/*    /index.html   200
