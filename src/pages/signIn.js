@@ -95,11 +95,10 @@ const Signup = withRouter(({ history }) => {
         } else if (res.data.success === true) {
           openNotificationWithIcon("success", res.data.message);
           history.push("/dashboard");
-          console.log(res.data.data.user);
           localStorage.setItem("user", JSON.stringify(res.data.data.user));
         }
       })
-      .catch((err) => console.log(err));
+      .catch((err) => openNotificationWithIcon("error", err.response ? err.response.data.message : err.message));
   }
   return (
     <div className="flex items-center my-5 md:my-0 flex-col-reverse md:flex-row justify-center signin_container align-middle mx-5">

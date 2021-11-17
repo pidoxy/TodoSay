@@ -124,16 +124,13 @@ export default function Signin() {
       },
     })
       .then((res) => {
-        console.log(res);
-
-        console.log(res.data.message);
         if (res.data.success === false) {
           openNotificationWithIcon("error", res.data.message);
         } else if (res.data.success === true) {
           openNotificationWithIcon("success", res.data.message);
         }
       })
-      .catch((err) => console.log(err));
+      .catch((err) => openNotificationWithIcon("error", err.response ? err.response.data.message : err.message));
   }
 
   return (
