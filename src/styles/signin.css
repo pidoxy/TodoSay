@@ -9,8 +9,8 @@ svg{
     margin-right: 0.5rem;
 }
 
-input[type="text" i]{
-    margin-top: 0.5rem !important;
+input[type="text" ]{
+    /* margin-top: 0.5rem !important; */
 }
 
 input[type="checkbox" i]{
