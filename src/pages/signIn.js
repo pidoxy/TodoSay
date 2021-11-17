@@ -6,7 +6,6 @@ import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 import { withRouter } from "react-router-dom";
 import axios from "axios";
 
-
 const Microsoft = () => (
   <svg
     width="20"
@@ -57,13 +56,23 @@ const openNotificationWithIcon = (type, description, placement) => {
   });
 };
 
- const Signup = withRouter(({history}) => {
+const Signup = withRouter(({ history }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-
   const URL = `https://todosay.herokuapp.com/api/auth/signin`;
 
+  const submit = (e) => {
+    if (password === "" && email === "") {
+      openNotificationWithIcon("error", "Input your details", "topRight");
+    } else if (email === "") {
+      openNotificationWithIcon("error", "Input your email", "topRight");
+    } else if (password === "") {
+      openNotificationWithIcon("error", "Input your password", "topRight");
+    } else if (password && email) {
+      submitHandler();
+    }
+  };
   async function submitHandler() {
     await axios({
       url: URL,
@@ -85,7 +94,7 @@ const openNotificationWithIcon = (type, description, placement) => {
           openNotificationWithIcon("error", res.data.message);
         } else if (res.data.success === true) {
           openNotificationWithIcon("success", res.data.message);
-          history.push('/dashboard')
+          history.push("/dashboard");
           console.log(res.data.data.user);
           localStorage.setItem("user", JSON.stringify(res.data.data.user));
         }
@@ -132,6 +141,7 @@ const openNotificationWithIcon = (type, description, placement) => {
           />
           <label style={{ marginTop: "2rem" }}>Password</label>
           <Input.Password
+            onKeyUp={(e) => (e.key === "Enter" ? submit : null)}
             onChange={(e) => setPassword(e.target.value)}
             style={{ marginTop: "0.5rem", marginBottom: "1rem" }}
             iconRender={(visible) =>
@@ -151,29 +161,7 @@ const openNotificationWithIcon = (type, description, placement) => {
             </div>
           </div>
           <Button
-            onClick={() => {
-              if (password === "" && email === "") {
-                openNotificationWithIcon(
-                  "error",
-                  "Input your details",
-                  "topRight"
-                );
-              } else if (email === "") {
-                openNotificationWithIcon(
-                  "error",
-                  "Input your email",
-                  "topRight"
-                );
-              } else if (password === "") {
-                openNotificationWithIcon(
-                  "error",
-                  "Input your password",
-                  "topRight"
-                );
-              } else if (password && email) {
-                submitHandler();
-              }
-            }}
+            onClick={submit}
             className="bg_primary"
             size={"large"}
             type="primary"
@@ -195,6 +183,6 @@ const openNotificationWithIcon = (type, description, placement) => {
       </div>
     </div>
   );
-})
+});
 
 export default Signup;

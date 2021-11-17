@@ -105,14 +105,15 @@ const Dashboard = withRouter(({history}) => {
   const [open, setOpen] = useState(false);
   const [visible, setVisible] = useState(false);
   const [visible2, setVisible2] = useState(false);
+  const [user, setUser] = useState({});
 
   const onSearch = (value) => console.log(value);
 
   let match = useRouteMatch();
 
   const logout = () => {
-    // history.push("/login");
     localStorage.clear();
+    history.push("/login");
   };
 
   const menu = (
@@ -161,7 +162,10 @@ const Dashboard = withRouter(({history}) => {
     });
   };
 
-  let user = JSON.parse(localStorage.getItem("user"));
+  useEffect(() => {
+
+    setUser(JSON.parse(localStorage.getItem("user")));
+  }, [user])
 
   return (
     <Layout>
@@ -235,7 +239,7 @@ const Dashboard = withRouter(({history}) => {
                 onClick={(e) => e.preventDefault()}
               >
                 <UserOutlined style={{ marginRight: 10 }} />
-                {user?.user.displayName}
+                {user.displayName}
               </div>
             </Dropdown>
             <MenuOutlined onClick={() => setOpen(!open)} />

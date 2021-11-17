@@ -62,6 +62,53 @@ export default function Signin() {
 
   const URL = `https://todosay.herokuapp.com/api/auth/signup`;
 
+  const submit = (e) => {
+    if (
+      password === "" &&
+      confirmPassword === "" &&
+      email === "" &&
+      username === ""
+    ) {
+      openNotificationWithIcon(
+        "error",
+        "Input your details",
+        "topRight"
+      );
+    } else if (username === "") {
+      openNotificationWithIcon(
+        "error",
+        "Input your username",
+        "topRight"
+      );
+    } else if (email === "") {
+      openNotificationWithIcon(
+        "error",
+        "Input your email",
+        "topRight"
+      );
+    } else if (password === "") {
+      openNotificationWithIcon(
+        "error",
+        "Input your password",
+        "topRight"
+      );
+    } else if (
+      password &&
+      confirmPassword &&
+      email &&
+      username &&
+      password === confirmPassword
+    ) {
+      submitHandler();
+    } else if (confirmPassword !== password) {
+      openNotificationWithIcon(
+        "error",
+        "Passwords do not match",
+        "topRight"
+      );
+    }
+  }
+
   async function submitHandler() {
     await axios({
       url: URL,
@@ -142,6 +189,7 @@ export default function Signin() {
           />
           <label className="mt-10">Confirm Password</label>
           <Input.Password
+            onKeyUp={(e) => (e.key === "Enter" ? submit : null)}
             onChange={(e) => setConfirmPassword(e.target.value)}
             iconRender={(visible) =>
               visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
@@ -155,52 +203,7 @@ export default function Signin() {
             </label>
           </div>
           <Button
-            onClick={() => {
-              if (
-                password === "" &&
-                confirmPassword === "" &&
-                email === "" &&
-                username === ""
-              ) {
-                openNotificationWithIcon(
-                  "error",
-                  "Input your details",
-                  "topRight"
-                );
-              } else if (username === "") {
-                openNotificationWithIcon(
-                  "error",
-                  "Input your username",
-                  "topRight"
-                );
-              } else if (email === "") {
-                openNotificationWithIcon(
-                  "error",
-                  "Input your email",
-                  "topRight"
-                );
-              } else if (password === "") {
-                openNotificationWithIcon(
-                  "error",
-                  "Input your password",
-                  "topRight"
-                );
-              } else if (
-                password &&
-                confirmPassword &&
-                email &&
-                username &&
-                password === confirmPassword
-              ) {
-                submitHandler();
-              } else if (confirmPassword !== password) {
-                openNotificationWithIcon(
-                  "error",
-                  "Passwords do not match",
-                  "topRight"
-                );
-              }
-            }}
+            onClick={submit}
             className="bg_primary"
             size={"large"}
             type="primary"
