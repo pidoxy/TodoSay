@@ -88,14 +88,16 @@ const Signup = withRouter(({ history }) => {
     })
       .then((res) => {
         console.log(res);
+          // localStorage.setItem("user", JSON.stringify(res.data.data));
 
         console.log(res.data.message);
         if (res.data.success === false) {
           openNotificationWithIcon("error", res.data.message);
         } else if (res.data.success === true) {
           openNotificationWithIcon("success", res.data.message);
+          console.log(res.data.data);
+          localStorage.setItem("user", JSON.stringify(res.data.data));
           history.push("/dashboard");
-          localStorage.setItem("user", JSON.stringify(res.data.data.user));
         }
       })
       .catch((err) => openNotificationWithIcon("error", err.response ? err.response.data.message : err.message));
